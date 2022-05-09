@@ -1,0 +1,21 @@
+---
+# file: roles/partition/tasks/main.yml
+- name: Create partition for machine images
+  become: yes
+  community.general.parted:
+    device: /dev/sdf
+    number: 1
+    state: present
+    fs_type: ext4
+
+- name: mount images
+  become: yes
+  notify: reboot
+  ansible.posix.mount:
+    path: /var/lib/libvirt/images
+    src: /dev/sdf1
+    fstype: ext4
+    state: present
+
+- name: Flush Handlers
+  meta: flush_handlers

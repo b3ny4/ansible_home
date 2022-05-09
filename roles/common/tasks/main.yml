@@ -1,0 +1,10 @@
+---
+# file: roles/common/tasks/main.yml
+- name: install common packages
+  become: yes
+  apt:
+    pkg:
+      - vim
+      - tmux
+    state: latest
+    update_cache: true

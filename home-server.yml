@@ -1,0 +1,7 @@
+---
+# file: homeserver.yml
+
+- hosts: home_server
+  roles:
+    - partition
+    - download-debian

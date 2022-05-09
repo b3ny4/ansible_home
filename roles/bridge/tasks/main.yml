@@ -1,0 +1,34 @@
+---
+# file: roles/bridge/tasks/main.yml
+
+- name: install netplan.io
+  become: yes
+  apt:
+    pkg: netplan.io
+    state: present
+    update_cache: true
+
+- name: copy bridge configuration
+  become: yes
+  copy:
+    src: 01-netcfg.yaml
+    dest: /etc/netplan/01-netcfg.yaml
+
+- name: configure bridge
+  become: yes
+  command: netplan generate
+  register: bridge_configured
+  when: '"br0" not in ansible_interfaces'
+
+- name: apply changes to netplan
+  become: yes
+  command: netplan apply
+  async: 60
+  poll: 0
+  register: netplan_applied
+  when: bridge_configured.changed
+
+- name: notify user about hanging system
+  debug:
+    msg: new netplan rules applied. The system probably hangs now. Please make sure ssh is back online on the host and rerun the playbook.
+  when: netplan_applied.changed

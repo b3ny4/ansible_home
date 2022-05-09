@@ -1,0 +1,26 @@
+---
+# file: roles/qemu/tasks/main.yml
+- name: install qemu
+  become: yes
+  apt:
+    pkg:
+      - qemu-kvm
+      - libvirt-clients
+      - libvirt-daemon-system
+      - bridge-utils
+      - libguestfs-tools
+      - genisoimage
+      - virtinst
+      - libosinfo-bin
+    state: present
+    update_cache: true
+
+- name: add admins to libvirt groups
+  become: yes
+  user:
+    name: home-admin
+    append: yes
+    groups:
+      - libvirt
+      - libvirt-qemu
+

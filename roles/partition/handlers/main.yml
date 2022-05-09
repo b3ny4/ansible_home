@@ -1,0 +1,6 @@
+---
+# file: roles/partition/handlers/main.yml
+
+- name: reboot
+  become: yes
+  reboot:
